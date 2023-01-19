@@ -1,0 +1,95 @@
+# Following is the R code for STATS 790 Homework 1 Question 6
+# ESL Exercise 2.8
+
+library(dplyr)
+library(class) # KNN function
+
+# Import dataset
+digits_train <- read.table('zip.train.gz') %>%
+  filter(V1 == 2 | V1 == 3) # Train set focusing on digits 2 and 3
+digits_test <- read.table('zip.test.gz') %>%
+  filter(V1 == 2 | V1 == 3) # Test set
+
+train_x <- digits_train[ ,-1] # Predictors for the train set
+train_y <- digits_train[ ,1] # Target for the train set
+
+test_x <- digits_test[ ,-1] # Predictors for the test set
+test_y <- digits_test[ ,1] # Target for the test set
+
+# Linear regression
+digits_linear <- lm(V1 ~., data = digits_train) # Linear regression model
+
+## Training error calculation ##
+linear_pred_train <- predict(digits_linear, digits_train) # Prediction on train set
+# modify predicted values, if greater than 2.5 then set to 3, else 2.
+linear_pred_train1 <- ifelse(linear_pred_train < 2.5, 2, 3)
+linear_train_error <- mean(linear_pred_train1 != train_y)
+linear_train_error # Training error
+
+## Testing error calculation ##
+linear_pred_test <- predict(digits_linear, digits_test) # Prediction on test set
+linear_pred_test1 <- ifelse(linear_pred_test < 2.5, 2, 3) # modify predicted values
+linear_test_error <- mean(linear_pred_test1 != test_y)
+linear_test_error # Testing error
+
+# K-Nearest Neighbor
+# K = 1
+knn1_pred_train <- knn(train_x, train_x, train_y, k = 1) # Predict on train
+knn1_train_error <- mean(knn1_pred_train != train_y)
+knn1_train_error # Training error
+
+knn1_pred_test <- knn(train_x, test_x, train_y, k = 1) # Predict on test
+knn1_test_error <- mean(knn1_pred_test != test_y)
+knn1_test_error # Testing error
+
+# K = 3
+knn3_pred_train <- knn(train_x, train_x, train_y, k = 3) # Predict on train
+knn3_train_error <- mean(knn3_pred_train != train_y)
+knn3_train_error # Training error
+
+knn3_pred_test <- knn(train_x, test_x, train_y, k = 3) # Predict on test
+knn3_test_error <- mean(knn3_pred_test != test_y)
+knn3_test_error # Testing error
+
+# K = 5
+knn5_pred_train <- knn(train_x, train_x, train_y, k = 5) # Predict on train
+knn5_train_error <- mean(knn5_pred_train != train_y)
+knn5_train_error # Training error
+
+knn5_pred_test <- knn(train_x, test_x, train_y, k = 5) # Predict on test
+knn5_test_error <- mean(knn5_pred_test != test_y)
+knn5_test_error # Testing error
+
+# K = 7
+knn7_pred_train <- knn(train_x, train_x, train_y, k = 7) # Predict on train
+knn7_train_error <- mean(knn7_pred_train != train_y)
+knn7_train_error # Training error
+
+knn7_pred_test <- knn(train_x, test_x, train_y, k = 7) # Predict on test
+knn7_test_error <- mean(knn7_pred_test != test_y)
+knn7_test_error # Testing error
+
+# K = 15
+knn15_pred_train <- knn(train_x, train_x, train_y, k = 15) # Predict on train
+knn15_train_error <- mean(knn15_pred_train != train_y)
+knn15_train_error # Training error
+
+knn15_pred_test <- knn(train_x, test_x, train_y, k = 15) # Predict on test
+knn15_test_error <- mean(knn15_pred_test != test_y)
+knn15_test_error # Testing error
+
+# Comparison among all the models
+# Build a matrix with training error and testing error on column
+# and each method on the row
+comparison <- matrix(c(linear_train_error, linear_test_error, knn1_train_error, 
+                       knn1_test_error, knn3_train_error, knn3_test_error, 
+                       knn5_train_error, knn5_test_error, knn7_train_error, 
+                       knn7_test_error, knn15_train_error, knn15_test_error), 
+                     ncol=2, byrow=TRUE)
+# Set column names
+colnames(comparison) <- c('Training Error','Testing Error')
+# Set row names
+rownames(comparison) <- c('Linear Regression','KNN-1','KNN-3','KNN-5','KNN-7','KNN-15')
+comparison <- as.table(comparison) # transfer to table format
+comparison
+
