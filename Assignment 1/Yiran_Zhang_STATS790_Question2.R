@@ -65,3 +65,4 @@ abline(linear_model, col = 'black', lwd = 3)
 points(orange_pt, col='orange', pch=20, cex = 0.3)
 points(blue_pt, col='deepskyblue', pch=20, cex = 0.3)
 
+# This assignment is awesome!
