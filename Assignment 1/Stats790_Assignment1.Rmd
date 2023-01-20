@@ -13,6 +13,10 @@ linestretch: 1.5
 
 ## Question 1
 
+Breiman (2001) criticized how the statisticians made assumptions on certain data models when solving data problems. In my opinion, making assumptions itself is a dangerous act in the field of science, because these assumptions are made for simpler analysis but the majority of the time in real world, none of these assumptions holds. For example, when I studied physics earlier in my undergrad, most of the problems referred to "negligible friction" or "negligible air resistance", which is never negligible in real life. In statistics, indeed, most of the data models have assumptions like linear relationship or a certain distribution, and we should all be aware that those assumptions are not reliable at first place. However, I am also aware that some algorithmic models also have assumptions, for example, Naive Bayes Classifier assumes the features are independent. Does it mean that algorithmic models may also be unreliable in some sense? 
+
+It's interesting that Breiman mentioned that algorithmic models were popular in industries in 2001. From my work experience, the industry still relies on algorithms for data analysis today. I'm also glad to see that schools are starting to offer more opportunities to learn about algorithmic models so that more statistical problems can be solved from a different perspective.
+
 ## Question 2
 
 (I discussed this question with Amandeep Sidhu.)
