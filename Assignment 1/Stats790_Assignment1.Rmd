@@ -164,21 +164,11 @@ Using the formula 1.70 in ADA, the degree of freedom = tr(w) = $\frac{1}{n} + \d
 
 ## Question 5
 
-According to the textbook ESL Chapter 2, the formula for a KNN regression is $\hat \mu(x) = \frac{1}{k}\sum_{x_i \in N_k} y_i$, where $N_k$ is the area defined by the k nearest neighbors of x. Fit this formula into the linear smoother formula, we get that $w(x_i, x) = \frac{1}{k}$, implying that the weight is $\frac{1}{k}$ if $x_i$ is within the neighborhood, and also note that the weight will be 0 if it's not inside the neighborhood. 
+According to the textbook ESL Chapter 2, the formula for a KNN regression is $\hat \mu(x) = \frac{1}{k}\sum_{x_i \in N_k} y_i$, where $N_k$ is the area defined by the k nearest neighbors of x. Fit this formula into the linear smoother formula, we get that $w(x_i, x) = \frac{1}{k}$, implying that the weight is $\frac{1}{k}$ if $x_i$ is within the neighborhood, and also note that the weight will be 0 if it's not inside the neighborhood. In matrix, the influence matrix w = $(w_{ij})$, 1 $\le$ i,j $\le$ n, where $w_{ii} = \frac{1}{k}$ for all i (because $x_i$ is definitely inside its own neighborhood), and for $i \neq j$, $w_{ij} = \frac{1}{k}$  if the observation is inside the neighborhood of $x_i$, 0 if not. In other words, the influence matrix w is a matrix with diagonal of all $\frac{1}{k}$'s, and the off-diagonal entries are either 0 or $\frac{1}{k}$ depending if the observation is inside the neighborhood. Also note that, there will be only k numbers of $\frac{1}{k}$ each row (so n-k 0's), so each row adds up to 1.
 
-Similar to question 4, we express in matrix form:
+To verify using the hint, we reduce to the case where k = n (i.e., consider all observations as the neighbor), then $a_{ij} = 1$ for all i and j, every entry takes value 1, so the influence matrix w is an n by n matrix with all $\frac{1}{k}$ (or $\frac{1}{n}$ since k = n). This is the same formula as the global mean in the above question, and this is reasonable because considering all the observations and put equal weights on them is exactly the idea of global mean, hence it is correct.
 
-$$
-[\frac{1}{k}(a_{ij})]
-\left[\begin{array}
-{rrr} y_1 \\ y_2 \\ \vdots \\ y_n
-\end{array}\right]
-$$
-where $a_{ij}$ is the entries of the n by n matrix, $a_{ij}$ = 1 if $x_i$ is within the neighborhood of x, 0 if not. In other words, w = $\frac{1}{k}A$ and A is an n by n matrix full of 1 and 0, the value depends on if the observation is around x. By this setting, the output will be of the form $\frac{1}{k}\sum_{x_i \in N_k} y_i$, it puts weights of $\frac{1}{k}$ on those within the k nearest neighbor of x, and put 0 weights on those are not.
-
-Given the hint, we reduce to the case where k = n (i.e., consider all observations as the neighbor), then $a_{ij} = 1$ for all i and j, every entry takes value 1, so the influence matrix w is an n by n matrix with all $\frac{1}{k}$ or $\frac{1}{n}$ since k = n. This is the same formula as the global mean in the above question, and this is reasonable because considering all the observations and put equal weights on them is exactly the idea of global mean, hence it is correct.
-
-Using the same definition of 1.70 in ADA, we get that the degree of freedom = tr(w) $\approx$ n/k because there is approximately n $\frac{1}{k}$'s on the diagonal of that influence matrix w.
+Using the same definition of 1.70 in ADA, we get that the degree of freedom = tr(w) = $\frac{1}{k}$ + $\dots$ + $\frac{1}{k}$ = $\frac{n}{k}$ because there is n $\frac{1}{k}$'s on the diagonal of that influence matrix w.
 
 ## Question 6
 
