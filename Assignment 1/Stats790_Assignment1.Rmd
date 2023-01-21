@@ -270,3 +270,9 @@ knitr::kable(comparison, caption = "Comparison between training error and testin
 ```
 
 From the comparison table above, we can see that KNN models with relatively small k value will have a better performance than the linear regression model. Among all the KNN models, both the training error rate and testing error rate increases as value of k increases.
+
+## References
+* Breiman, L. (2001). Statistical Modeling: The Two Cultures. Statistical Science, 16(3), 199-215.
+* Gelman, A. (2020). Reflections on Breiman's Two Cultures of Statistical Modeling. Columbia Statistics. http://www.stat.columbia.edu/~gelman/research/published/gelman_breiman.pdf
+* Rohilla, C. (2021). Advanced Data Analysis from an Elementary Point of View.
+* Tibshirani, R., Friedman, J., & Hastie, T. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction, Second Edition. Springer.
