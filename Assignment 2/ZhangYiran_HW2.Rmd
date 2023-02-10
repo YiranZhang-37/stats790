@@ -76,6 +76,52 @@ LL^T\overrightarrow{\beta} &= X^T\overrightarrow{Y}\\
 The coefficients are $\overrightarrow{\beta} = (LL^T)^{-1}X^T\overrightarrow{Y}$, when solving for $\overrightarrow{\beta}$, we can solve for $L^T\overrightarrow{\beta}$ first from the equation $L(L^T\overrightarrow{\beta}) = X^T\overrightarrow{Y}$, then solve for $\overrightarrow{\beta}$ from $L^T\overrightarrow{\beta}$, since using triangular matrix in calculation will be simpler than calculating an inverse.
 
 #### (b)
+Assume that the predictors X and responses Y are in separate matrices.
+
+**Naive Linear Algebra:**
+```{r}
+beta_naive <- function(X,Y){
+  # X is the matrix of predictors.
+  # Y is the vector of responses
+  X_new <- cbind(rep(1, nrow(X)), X) # add a column of 1 for beta_0
+  solve(t(X_new)%*%X_new)%*%t(X_new)%*%Y # beta estimator
+}
+```
+
+**QR Decomposition:**
+```{r}
+beta_qr <- function(X,Y){
+  # X is the matrix of predictors.
+  # Y is the vector of responses
+  X_new <- cbind(rep(1, nrow(X)), X) # add a column of 1 for beta_0
+  qr_decomp <- qr(X_new) # Obtain the QR decomposition of X
+  Q <- qr.Q(qr_decomp) # Q matrix
+  R <- qr.R(qr_decomp) # R matrix
+  solve(R)%*%t(Q)%*%Y # beta estimator
+}
+```
+
+**Cholesky Decomposition:**
+```{r}
+beta_chol <- function(X,Y){
+  # X is the matrix of predictors.
+  # Y is the vector of responses
+  X_new <- cbind(rep(1, nrow(X)), X) # add a column of 1 for beta_0
+  chol_target <- t(X_new)%*%X_new # prepare X^T*X for Cholesky Decomposition
+  L <- t(chol(chol_target)) # lower triangular matrix L
+  # solve for L^T*beta
+  # L(L^T*beta) = X^T*Y, L is lower triangular, use backsolve command
+  L_trans_beta <- backsolve(L, t(X_new)%*%Y, upper.tri = FALSE)
+  backsolve(t(L), L_trans_beta, upper.tri = TRUE) # solve for beta
+}
+```
+
+**Algorithms testing:**
+Test case 1: X = , Y = , n = , p = .
+
+Test case 2: X = , Y = , n = , p = .
+
+Test case 3: X = , Y = , n = , p = .
 
 #### (c)
 
