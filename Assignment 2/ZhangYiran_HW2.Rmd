@@ -13,7 +13,7 @@ linestretch: 1.5
 
 ## Question 1
 #### (a)
-In linear regression, the assumed model is $y = \beta_0 + \beta_1x_1 + \dots + \beta_kx_k + \epsilon$, it can be written in matrix form as $\overrightarrow{Y} = X\overrightarrow{\beta} + \overrightarrow{\epsilon}$, where $\overrightarrow{\beta}$ is the vector of coefficients (dimension is (k+1) $\times$ 1), Y is the n $\times$ 1 vector of responses, X is an n $\times$ (k+1) matrix of predictors, it is also assumed to be full rank. The estimator of $\overrightarrow{Y}$ is $\hat{\overrightarrow{Y}} = X{\overrightarrow{\beta}}$.
+In linear regression, the assumed model is $y = \beta_0 + \beta_1x_1 + \dots + \beta_px_p + \epsilon$, it can be written in matrix form as $\overrightarrow{Y} = X\overrightarrow{\beta} + \overrightarrow{\epsilon}$, where $\overrightarrow{\beta}$ is the vector of coefficients (dimension is (p+1) $\times$ 1), Y is the n $\times$ 1 vector of responses, X is an n $\times$ (p+1) matrix of predictors, it is also assumed to be full rank. The estimator of $\overrightarrow{Y}$ is $\hat{\overrightarrow{Y}} = X{\overrightarrow{\beta}}$.
 
 **Naive Linear Algebra**
 Use the least square estimation: 
@@ -35,7 +35,7 @@ We want to minimize the residual sum of square value, therefore we take the firs
 Therefore, $X^T\overrightarrow{Y} = X^TX\overrightarrow{\beta}$, solve for $\overrightarrow{\beta}$ and get that the coefficients are $\overrightarrow{\beta} = (X^TX)^{-1}X^T\overrightarrow{Y}$. We can also compute the second partial derivative to check if it is minimum: $\frac{\partial^2 RSS(\overrightarrow{\beta})}{\partial \overrightarrow{\beta}^2} = 2X^TX > 0$. Hence the least square is minimized when $\overrightarrow{\beta} = (X^TX)^{-1}X^T\overrightarrow{Y}$.
 
 **QR Decomposition**
-Based on the definition of QR Decomposition, since X is defined as full rank, it can be written as the form X=QR, Q is an n $\times$ (k+1) orthogonal matrix (i.e., $Q^T = Q^{-1}$), and R is an (k+1) $\times$ (k+1) invertible upper triangular matrix. Then we can substitute X in the above equation with Q and R.
+Based on the definition of QR Decomposition, since X is defined as full rank, it can be written as the form X=QR, Q is an n $\times$ (p+1) orthogonal matrix (i.e., $Q^T = Q^{-1}$), and R is an (p+1) $\times$ (p+1) invertible upper triangular matrix. Then we can substitute X in the above equation with Q and R.
 
 \begin{align*}
 \overrightarrow{\beta} &= (X^TX)^{-1}X^T\overrightarrow{Y}\\
@@ -49,9 +49,31 @@ Based on the definition of QR Decomposition, since X is defined as full rank, it
 The coefficients are $\overrightarrow{\beta} = R^{-1}Q^T\overrightarrow{Y}$.
 
 **SVD**
-X is full rank, therefore we can apply singular value decomposition to X by writting it in the form $X = U \Sigma V^T$, where U is n $\times$ n matrix, $\Sigma$ is n $\times$ (k+1) matrix, V is (k+1) $\times$ (k+1) matrix.
+X is full rank, therefore we can apply singular value decomposition to X by writing it in the form $X = U \Sigma V^T$, where U is n $\times$ n orthogonal matrix ($U^TU = I$), $\Sigma$ is n $\times$ (p+1) matrix, V is (p+1) $\times$ (p+1) orthogonal matrix ($V^TV=I$).
+
+Then, solve for $X\overrightarrow{\beta} = \overrightarrow{Y}$
+\begin{align*}
+U \Sigma V^T\overrightarrow{\beta} &= \overrightarrow{Y}\\
+U^TU \Sigma V^T\overrightarrow{\beta} &= U^T\overrightarrow{Y}\\
+\Sigma V^T\overrightarrow{\beta} &= U^T\overrightarrow{Y}\\
+V^T\overrightarrow{\beta} &= \Sigma^{-1}U^T\overrightarrow{Y}\\
+VV^T\overrightarrow{\beta} &= V\Sigma^{-1}U^T\overrightarrow{Y}\\
+\overrightarrow{\beta} &= V\Sigma^{-1}U^T\overrightarrow{Y}
+\end{align*}
+
+The coefficients are $\overrightarrow{\beta} = V\Sigma^{-1}U^T\overrightarrow{Y}$, note that $\Sigma^{-1}$ is a pseudo inverse of $\Sigma$.
 
 **Cholesky Decomposition**
+Cholesky decomposition states that a positive definite matrix can be written as the product of a lower triangular matrix and its transpose. X is full rank, hence $X^TX$ is positive definite, then it can be written as $X^TX = LL^T$ where L is lower triangular.
+
+\begin{align*}
+X\overrightarrow{\beta} &= \overrightarrow{Y}\\
+X^TX\overrightarrow{\beta} &= X^T\overrightarrow{Y}\\
+LL^T\overrightarrow{\beta} &= X^T\overrightarrow{Y}\\
+\overrightarrow{\beta} &= (LL^T)^{-1}X^T\overrightarrow{Y}
+\end{align*}
+
+The coefficients are $\overrightarrow{\beta} = (LL^T)^{-1}X^T\overrightarrow{Y}$, when solving for $\overrightarrow{\beta}$, we can solve for $L^T\overrightarrow{\beta}$ first from the equation $L(L^T\overrightarrow{\beta}) = X^T\overrightarrow{Y}$, then solve for $\overrightarrow{\beta}$ from $L^T\overrightarrow{\beta}$, since using triangular matrix in calculation will be simpler than calculating an inverse.
 
 #### (b)
 
