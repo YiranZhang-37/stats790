@@ -1,0 +1,72 @@
+---
+title: |
+  | STATS 790 Assignment 2
+author: "| Yiran Zhang\n| 400119421\n"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document:
+    extra_dependencies: ["amsmath", "amssymb"]
+fontsize: 10pt
+geometry: margin = 1in
+linestretch: 1.5
+---
+
+## Question 1
+#### (a)
+In linear regression, the assumed model is $y = \beta_0 + \beta_1x_1 + \dots + \beta_kx_k + \epsilon$, it can be written in matrix form as $\overrightarrow{Y} = X\overrightarrow{\beta} + \overrightarrow{\epsilon}$, where $\overrightarrow{\beta}$ is the vector of coefficients (dimension is (k+1) $\times$ 1), Y is the n $\times$ 1 vector of responses, X is an n $\times$ (k+1) matrix of predictors, it is also assumed to be full rank. The estimator of $\overrightarrow{Y}$ is $\hat{\overrightarrow{Y}} = X{\overrightarrow{\beta}}$.
+
+**Naive Linear Algebra**
+Use the least square estimation: 
+\begin{align*}
+RSS(\overrightarrow{\beta}) &= \sum_{i=1}^n \epsilon_i^2\\
+&= \sum_{i=1}^n (y_i - \hat{y_i})^2\\
+&= (\overrightarrow{Y}-\hat{\overrightarrow{Y}})^T(\overrightarrow{Y}-\hat{\overrightarrow{Y}})\\
+&= (\overrightarrow{Y}-X\overrightarrow{\beta})^T(\overrightarrow{Y}-X\overrightarrow{\beta})
+\end{align*}
+
+We want to minimize the residual sum of square value, therefore we take the first derivative of it and set it to 0.
+
+\begin{align*}
+\frac{\partial RSS(\overrightarrow{\beta})}{\partial \overrightarrow{\beta}} &= \frac{\partial (\overrightarrow{Y}-X\overrightarrow{\beta})^T(\overrightarrow{Y}-X\overrightarrow{\beta})}{\partial \overrightarrow{\beta}}\\
+&= -2X^T\overrightarrow{Y}+2X^TX\overrightarrow{\beta}\\
+&= 0
+\end{align*}
+
+Therefore, $X^T\overrightarrow{Y} = X^TX\overrightarrow{\beta}$, solve for $\overrightarrow{\beta}$ and get that the coefficients are $\overrightarrow{\beta} = (X^TX)^{-1}X^T\overrightarrow{Y}$. We can also compute the second partial derivative to check if it is minimum: $\frac{\partial^2 RSS(\overrightarrow{\beta})}{\partial \overrightarrow{\beta}^2} = 2X^TX > 0$. Hence the least square is minimized when $\overrightarrow{\beta} = (X^TX)^{-1}X^T\overrightarrow{Y}$.
+
+**QR Decomposition**
+Based on the definition of QR Decomposition, since X is defined as full rank, it can be written as the form X=QR, Q is an n $\times$ (k+1) orthogonal matrix (i.e., $Q^T = Q^{-1}$), and R is an (k+1) $\times$ (k+1) invertible upper triangular matrix. Then we can substitute X in the above equation with Q and R.
+
+\begin{align*}
+\overrightarrow{\beta} &= (X^TX)^{-1}X^T\overrightarrow{Y}\\
+&= ((QR)^TQR)^{-1}(QR)^TR^{-1}Q^T\overrightarrow{Y}\\
+&= (R^TQ^TQR)^{-1}R^TQ^T\overrightarrow{Y}\\
+&= (R^TR)^{-1}R^TQ^T\overrightarrow{Y}\\
+&= R^{-1}(R^T)^{-1}R^TQ^T\overrightarrow{Y}\\
+&= R^{-1}Q^T\overrightarrow{Y}
+\end{align*}
+
+The coefficients are $\overrightarrow{\beta} = R^{-1}Q^T\overrightarrow{Y}$.
+
+**SVD**
+X is full rank, therefore we can apply singular value decomposition to X by writting it in the form $X = U \Sigma V^T$, where U is n $\times$ n matrix, $\Sigma$ is n $\times$ (k+1) matrix, V is (k+1) $\times$ (k+1) matrix.
+
+**Cholesky Decomposition**
+
+#### (b)
+
+#### (c)
+
+## Question 2
+
+## Question 3
+
+#### ESL 3.6
+
+#### ESL 3.19
+
+#### ESL 3.28
+
+#### ESL 3.30
+
+## Reference
