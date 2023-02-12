@@ -164,6 +164,7 @@ legend(x = 'bottomright',
        col=c("red", "blue", "green"), lty = 1)
 ```
 
+2. Use p = 20 and a range of n values.
 ```{r}
 p <- 20
 n_vec <- round(100*seq(3, 7, by = 0.25)) # a list of n values
@@ -208,6 +209,7 @@ legend(x = 'bottomright',
        col=c("red", "blue", "green"), lty = 1)
 ```
 
+3. Use p = 50 and a range of n values.
 ```{r}
 p <- 50
 n_vec <- round(100*seq(3, 7, by = 0.25)) # a list of n values
@@ -335,6 +337,21 @@ Based on the above outputs, the new implemented ridge regression has less mean s
 ## Question 3
 
 #### ESL 3.6
+Given prior $\overrightarrow{\beta} \sim N(0, \tau I)$, then $\pi(\overrightarrow{\beta})\propto exp(-\frac{1}{2\tau}\overrightarrow{\beta}^T \overrightarrow{\beta})$. Given the sampling model is also Gaussian, $\overrightarrow{Y}|\overrightarrow{\beta} \sim N(X\overrightarrow{\beta}, \sigma^2 I)$, then $\pi(\overrightarrow{Y}|\overrightarrow{\beta})\propto exp(-\frac{1}{2\sigma^2}(\overrightarrow{Y}-X\overrightarrow{\beta})^T(\overrightarrow{Y}-X\overrightarrow{\beta}))$.
+
+From Bayesian inference, we calculate the posterior distribution to be:
+\begin{align*}
+\pi(\overrightarrow{\beta}|\overrightarrow{Y}) &\propto \pi(\overrightarrow{\beta})\pi(\overrightarrow{Y}|\overrightarrow{\beta})\\ 
+&= exp(-\frac{1}{2\tau}\overrightarrow{\beta}^T \overrightarrow{\beta}-\frac{1}{2\sigma^2}(\overrightarrow{Y}-X\overrightarrow{\beta})^T(\overrightarrow{Y}-X\overrightarrow{\beta}))\\
+&= exp\{-\frac{1}{2}(\frac{\overrightarrow{\beta}^T\overrightarrow{\beta}}{\tau}+\frac{\overrightarrow{Y}^T\overrightarrow{Y}-2\overrightarrow{Y}^TX\overrightarrow{\beta}+\overrightarrow{\beta}^TX^TX\overrightarrow{\beta}}{\sigma^2})\}\\
+&\propto exp\{-\frac{1}{2}[(\frac{1}{\tau}I+\frac{X^TX}{\sigma^2})\overrightarrow{\beta}^T\overrightarrow{\beta}-\frac{2X^T\overrightarrow{Y}}{\sigma^2}\overrightarrow{\beta}]\}\\
+&= exp\{-\frac{1}{2}(\frac{1}{\tau}I+\frac{X^TX}{\sigma^2})[\overrightarrow{\beta}^T\overrightarrow{\beta}-2\frac{\frac{X^T\overrightarrow{Y}}{\sigma^2}}{\frac{1}{\tau}I+\frac{X^TX}{\sigma^2}}\overrightarrow{\beta}\}]\\
+&\propto exp\{-\frac{1}{2}(\frac{1}{\tau}I+\frac{X^TX}{\sigma^2})(\overrightarrow{\beta}-E[\overrightarrow{\beta}|\overrightarrow{Y}])^2\}
+\end{align*}
+
+The posterior distribution is also Gaussian, with mean equal to $\frac{\frac{X^T\overrightarrow{Y}}{\sigma^2}}{\frac{1}{\tau}I+\frac{X^TX}{\sigma^2}}$.
+
+Simplify it and we get $(X^TX+\frac{\sigma^2}{\tau}I)^{-1}X^T\overrightarrow{Y}$, if taking the regularization parameter $\lambda = \frac{\sigma^2}{\tau}$, then the mean of the posterior is $(X^TX+\lambda I)^{-1}X^T\overrightarrow{Y}$, which is exactly the formula for ridge regression estimate. Moreover, since the posterior is Gaussian, the mode is the same as the mean, which is also the ridge regression estimate.
 
 #### ESL 3.19
 
