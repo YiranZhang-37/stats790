@@ -13,7 +13,7 @@ linestretch: 1.5
 
 ## Question 1
 #### (a)
-In linear regression, the assumed model is $y = \beta_0 + \beta_1x_1 + \dots + \beta_px_p + \epsilon$, it can be written in matrix form as $\overrightarrow{Y} = X\overrightarrow{\beta} + \overrightarrow{\epsilon}$, where $\overrightarrow{\beta}$ is the vector of coefficients (dimension is (p+1) $\times$ 1), Y is the n $\times$ 1 vector of responses, X is an n $\times$ (p+1) matrix of predictors, it is also assumed to be full rank. The estimator of $\overrightarrow{Y}$ is $\hat{\overrightarrow{Y}} = X{\overrightarrow{\beta}}$.
+In linear regression, the assumed model is $y = \beta_0 + \beta_1x_1 + \dots + \beta_px_p + \epsilon$, it can be written in matrix form as $\overrightarrow{Y} = X\overrightarrow{\beta} + \overrightarrow{\epsilon}$, where $\overrightarrow{\beta}$ is the vector of coefficients (dimension is p $\times$ 1, or (p+1) $\times$ 1 if consider $\beta_0$), Y is the n $\times$ 1 vector of responses, X is an n $\times$ p matrix of predictors (or n $\times$ (p+1) if add one column of 1's for $\beta_0$), it is also assumed to be full rank. The estimator of $\overrightarrow{Y}$ is $\hat{\overrightarrow{Y}} = X{\overrightarrow{\beta}}$.
 
 **Naive Linear Algebra**
 Use the least square estimation: 
@@ -35,21 +35,20 @@ We want to minimize the residual sum of square value, therefore we take the firs
 Therefore, $X^T\overrightarrow{Y} = X^TX\overrightarrow{\beta}$, solve for $\overrightarrow{\beta}$ and get that the coefficients are $\overrightarrow{\beta} = (X^TX)^{-1}X^T\overrightarrow{Y}$. We can also compute the second partial derivative to check if it is minimum: $\frac{\partial^2 RSS(\overrightarrow{\beta})}{\partial \overrightarrow{\beta}^2} = 2X^TX > 0$. Hence the least square is minimized when $\overrightarrow{\beta} = (X^TX)^{-1}X^T\overrightarrow{Y}$.
 
 **QR Decomposition**
-Based on the definition of QR Decomposition, since X is defined as full rank, it can be written as the form X=QR, Q is an n $\times$ (p+1) orthogonal matrix (i.e., $Q^T = Q^{-1}$), and R is an (p+1) $\times$ (p+1) invertible upper triangular matrix. Then we can substitute X in the above equation with Q and R.
+Based on the definition of QR Decomposition, since X is defined as full rank, it can be written as the form X=QR, Q is an n $\times$ (p+1) orthogonal matrix (i.e., $Q^T = Q^{-1}$), and R is an (p+1) $\times$ (p+1) invertible upper triangular matrix (Anton & Rorres, 2013). Then we can substitute X in the above equation with Q and R.
 
 \begin{align*}
-\overrightarrow{\beta} &= (X^TX)^{-1}X^T\overrightarrow{Y}\\
-&= ((QR)^TQR)^{-1}(QR)^TR^{-1}Q^T\overrightarrow{Y}\\
-&= (R^TQ^TQR)^{-1}R^TQ^T\overrightarrow{Y}\\
-&= (R^TR)^{-1}R^TQ^T\overrightarrow{Y}\\
-&= R^{-1}(R^T)^{-1}R^TQ^T\overrightarrow{Y}\\
-&= R^{-1}Q^T\overrightarrow{Y}
+X^TX\overrightarrow{\beta} &= X^T\overrightarrow{Y}\\
+(QR)^TQR\overrightarrow{\beta} &= (QR)^T\overrightarrow{Y}\\
+R^TQ^TQR\overrightarrow{\beta} &= R^TQ^T\overrightarrow{Y}\\
+R^TR\overrightarrow{\beta} &= R^TQ^T\overrightarrow{Y}\\
+R\overrightarrow{\beta}&= Q^T\overrightarrow{Y}
 \end{align*}
 
-The coefficients are $\overrightarrow{\beta} = R^{-1}Q^T\overrightarrow{Y}$.
+To obtain $\overrightarrow{\beta}$ estimate, use backward substitution since R is upper triangular, and $Q^T\overrightarrow{Y}$ is a (p+1) $\times$ 1 vector.
 
 **SVD**
-X is full rank, therefore we can apply singular value decomposition to X by writing it in the form $X = U \Sigma V^T$, where U is n $\times$ n orthogonal matrix ($U^TU = I$), $\Sigma$ is n $\times$ (p+1) matrix, V is (p+1) $\times$ (p+1) orthogonal matrix ($V^TV=I$).
+X is full rank, therefore we can apply singular value decomposition to X by writing it in the form $X = U \Sigma V^T$, where U is n $\times$ n orthogonal matrix ($U^TU = I$), $\Sigma$ is n $\times$ (p+1) matrix, V is (p+1) $\times$ (p+1) orthogonal matrix ($V^TV=I$) (Anton & Rorres, 2013).
 
 Then, solve for $X\overrightarrow{\beta} = \overrightarrow{Y}$
 \begin{align*}
@@ -70,10 +69,10 @@ Cholesky decomposition states that a positive definite matrix can be written as 
 X\overrightarrow{\beta} &= \overrightarrow{Y}\\
 X^TX\overrightarrow{\beta} &= X^T\overrightarrow{Y}\\
 LL^T\overrightarrow{\beta} &= X^T\overrightarrow{Y}\\
-\overrightarrow{\beta} &= (LL^T)^{-1}X^T\overrightarrow{Y}
+L(L^T\overrightarrow{\beta}) &= X^T\overrightarrow{Y}\\
 \end{align*}
 
-The coefficients are $\overrightarrow{\beta} = (LL^T)^{-1}X^T\overrightarrow{Y}$, when solving for $\overrightarrow{\beta}$, we can solve for $L^T\overrightarrow{\beta}$ first from the equation $L(L^T\overrightarrow{\beta}) = X^T\overrightarrow{Y}$, then solve for $\overrightarrow{\beta}$ from $L^T\overrightarrow{\beta}$, since using triangular matrix in calculation will be simpler than calculating an inverse.
+To solve for $\overrightarrow{\beta}$, we can solve for $L^T\overrightarrow{\beta}$ first from the equation $L(L^T\overrightarrow{\beta}) = X^T\overrightarrow{Y}$ using forward substitution, then solve for $\overrightarrow{\beta}$ from $L^T\overrightarrow{\beta}$ using backward substitution.
 
 #### (b)
 Assume that the predictors X and responses Y are in separate matrices.
@@ -83,8 +82,8 @@ Assume that the predictors X and responses Y are in separate matrices.
 beta_naive <- function(X,Y){
   # X is the matrix of predictors.
   # Y is the vector of responses
-  X_new <- cbind(rep(1, nrow(X)), X) # add a column of 1 for beta_0
-  solve(t(X_new)%*%X_new)%*%t(X_new)%*%Y # beta estimator
+  X_new <- cbind(1, X) # add a column of 1 for beta_0
+  solve(t(X_new) %*% X_new) %*% t(X_new) %*% Y # beta estimator
 }
 ```
 
@@ -93,11 +92,11 @@ beta_naive <- function(X,Y){
 beta_qr <- function(X,Y){
   # X is the matrix of predictors.
   # Y is the vector of responses
-  X_new <- cbind(rep(1, nrow(X)), X) # add a column of 1 for beta_0
+  X_new <- cbind(1, X) # add a column of 1 for beta_0
   qr_decomp <- qr(X_new) # Obtain the QR decomposition of X
   Q <- qr.Q(qr_decomp) # Q matrix
   R <- qr.R(qr_decomp) # R matrix
-  solve(R)%*%t(Q)%*%Y # beta estimator
+  backsolve(R, t(Q) %*% Y)
 }
 ```
 
@@ -106,26 +105,232 @@ beta_qr <- function(X,Y){
 beta_chol <- function(X,Y){
   # X is the matrix of predictors.
   # Y is the vector of responses
-  X_new <- cbind(rep(1, nrow(X)), X) # add a column of 1 for beta_0
+  X_new <- cbind(1, X) # add a column of 1 for beta_0
   chol_target <- t(X_new)%*%X_new # prepare X^T*X for Cholesky Decomposition
   L <- t(chol(chol_target)) # lower triangular matrix L
-  # solve for L^T*beta
-  # L(L^T*beta) = X^T*Y, L is lower triangular, use backsolve command
-  L_trans_beta <- backsolve(L, t(X_new)%*%Y, upper.tri = FALSE)
+  # solve for L^T*beta, L(L^T*beta) = X^T*Y
+  L_trans_beta <- forwardsolve(L, t(X_new) %*% Y, upper.tri = FALSE)
   backsolve(t(L), L_trans_beta, upper.tri = TRUE) # solve for beta
 }
 ```
 
-**Algorithms testing:**
-Test case 1: X = , Y = , n = , p = .
+**Benchmark:**
 
-Test case 2: X = , Y = , n = , p = .
+1. Use p = 10 and a range of n values.
+```{r}
+# Import benchmark library
+library(microbenchmark)
 
-Test case 3: X = , Y = , n = , p = .
+p <- 10
+n_vec <- round(100*seq(3, 7, by = 0.25)) # a list of n values
+
+# Store the time for each n value
+output_table <- matrix(NA, ncol = 4, nrow = length(n_vec))
+colnames(output_table) <- c("n", "naive_time", "qr_time", "cholesky_time")
+index <- 1
+
+# Run benchmark for different n values
+for (n in n_vec){
+  X <- matrix(rnorm(n*p), nrow=n, ncol=p) # Simulate X matrix
+  Y <- matrix(rnorm(n), ncol=1) # Simulate Y vector
+  # Benchmark the three algorithms
+  benchmark_result <- microbenchmark(beta_naive(X, Y), 
+                                     beta_qr(X, Y), 
+                                     beta_chol(X, Y))
+  result <- summary(benchmark_result)
+  # Store the mean computational time in the matrix
+  output_table[index, ] = c(n, result$mean[1], 
+                            result$mean[2], 
+                            result$mean[3])
+  index <- index + 1
+}
+
+# To plot in log-log scale, take the log of entire table
+target <- log(output_table)
+
+# Find limit of y axis for better visualization
+ylim_min <- min(target[,2], target[,3], target[,4])
+ylim_max <- max(target[,2], target[,3], target[,4])
+
+# Create line graph
+plot(target[, 1], target[, 2], 
+     type = "o", ylim=c(ylim_min, ylim_max), col='red',
+     xlab = 'log(n)', ylab = 'log(time used in microsecond)', 
+     main = 'n VS time in log-log scale (p = 10)')
+lines(target[, 1], target[, 3], type = "o", col = 'blue')
+lines(target[, 1], target[, 4], type = "o", col = 'green')
+legend(x = 'bottomright', 
+       legend=c("Naive time", "QR time", "Cholesky time"),
+       col=c("red", "blue", "green"), lty = 1)
+```
+
+```{r}
+p <- 20
+n_vec <- round(100*seq(3, 7, by = 0.25)) # a list of n values
+
+# Store the time for each n value
+output_table <- matrix(NA, ncol = 4, nrow = length(n_vec))
+colnames(output_table) <- c("n", "naive_time", "qr_time", "cholesky_time")
+index <- 1
+
+# Run benchmark for different n values
+for (n in n_vec){
+  X <- matrix(rnorm(n*p), nrow=n, ncol=p) # Simulate X matrix
+  Y <- matrix(rnorm(n), ncol=1) # Simulate Y vector
+  # Benchmark the three algorithms
+  benchmark_result <- microbenchmark(beta_naive(X, Y), 
+                                     beta_qr(X, Y), 
+                                     beta_chol(X, Y))
+  result <- summary(benchmark_result)
+  # Store the mean computational time in the matrix
+  output_table[index, ] = c(n, result$mean[1], 
+                            result$mean[2], 
+                            result$mean[3])
+  index <- index + 1
+}
+
+# To plot in log-log scale, take the log of entire table
+target <- log(output_table)
+
+# Find limit of y axis for better visualization
+ylim_min <- min(target[,2], target[,3], target[,4])
+ylim_max <- max(target[,2], target[,3], target[,4])
+
+# Create line graph
+plot(target[, 1], target[, 2], 
+     type = "o", ylim=c(ylim_min, ylim_max), col='red',
+     xlab = 'log(n)', ylab = 'log(time used in microsecond)', 
+     main = 'n VS time in log-log scale (p = 20)')  
+lines(target[, 1], target[, 3], type = "o", col = 'blue')
+lines(target[, 1], target[, 4], type = "o", col = 'green')
+legend(x = 'bottomright', 
+       legend=c("Naive time", "QR time", "Cholesky time"),
+       col=c("red", "blue", "green"), lty = 1)
+```
+
+```{r}
+p <- 50
+n_vec <- round(100*seq(3, 7, by = 0.25)) # a list of n values
+
+# Store the time for each n value
+output_table <- matrix(NA, ncol = 4, nrow = length(n_vec))
+colnames(output_table) <- c("n", "naive_time", "qr_time", "cholesky_time")
+index <- 1
+
+# Run benchmark for different n values
+for (n in n_vec){
+  X <- matrix(rnorm(n*p), nrow=n, ncol=p) # Simulate X matrix
+  Y <- matrix(rnorm(n), ncol=1) # Simulate Y vector
+  # Benchmark the three algorithms
+  benchmark_result <- microbenchmark(beta_naive(X, Y), 
+                                     beta_qr(X, Y), 
+                                     beta_chol(X, Y))
+  result <- summary(benchmark_result)
+  # Store the mean computational time in the matrix
+  output_table[index, ] = c(n, result$mean[1], 
+                            result$mean[2], 
+                            result$mean[3])
+  index <- index + 1
+}
+
+# To plot in log-log scale, take the log of entire table
+target <- log(output_table)
+
+# Find limit of y axis for better visualization
+ylim_min <- min(target[,2], target[,3], target[,4])
+ylim_max <- max(target[,2], target[,3], target[,4])
+
+# Create line graph
+plot(target[, 1], target[, 2], 
+     type = "o", ylim=c(ylim_min, ylim_max), col='red',
+     xlab = 'log(n)', ylab = 'log(time used in microsecond)', 
+     main = 'n VS time in log-log scale (p = 50)')  
+lines(target[, 1], target[, 3], type = "o", col = 'blue')
+lines(target[, 1], target[, 4], type = "o", col = 'green')
+legend(x = 'bottomright', 
+       legend=c("Naive time", "QR time", "Cholesky time"),
+       col=c("red", "blue", "green"), lty = 1)
+```
+
+We benchmark the three algorithms using microbenchmark command for p = 10, 20, 50 respectively and using n from the range (300, 700). The log-log scale plots above shows that the algorithm using QR Decomposition has the highest computational time, linear regression with naive linear algebra has the second highest computational time, and linear regression with Cholesky Decomposition has the lowest computational time. The general trends show that the computational time increases as n increases, and increases as p increases.
 
 #### (c)
+Time complexity for naive linear algebra is said to be $O(np^2+p^3)$, for QR decomposition is $O(np^2)$, for SVD is $O(n^2p)$, and for Choleskey decomposition is $O(np^2)$.
 
 ## Question 2
+The formula for ridge regression is $\hat{\beta}^{ridge} = argmin[\sum_{i=1}^n (y_i-\beta_0-\sum_{i=1}^p x_{ij}\beta_j)^2+\lambda\sum_{j=1}^p \beta_j^2]$. In matrix form $\hat{\beta}^{ridge} = (\overrightarrow{Y}-X\overrightarrow{\beta})^T(\overrightarrow{Y}-X\overrightarrow{\beta})+\lambda\overrightarrow{\beta}^T\overrightarrow{\beta}$ (Hastie et al., 2009).
+
+Minimize the RSS function by taking the first derivative and set to 0:
+\begin{align*}
+\frac{\partial RSS(\overrightarrow{\beta}^{ridge})}{\partial \overrightarrow{\beta}^{ridge}} &= \frac{\partial (\overrightarrow{Y}-X\overrightarrow{\beta})^T(\overrightarrow{Y}-X\overrightarrow{\beta})+\lambda\overrightarrow{\beta}^T\overrightarrow{\beta}}{\partial \overrightarrow{\beta}}\\
+&= -2X^T\overrightarrow{Y}+2X^TX\overrightarrow{\beta}+2\lambda\overrightarrow{\beta}\\
+&= 0
+\end{align*}
+
+$\overrightarrow{\beta}^{ridge} = (X^TX+\lambda I_p)^{-1}X^T\overrightarrow{Y}$, we will implement this estimation into the R code below.
+
+```{r}
+ridge_augmented <- function(X, Y, lambda=0){
+  X <- cbind(1, X) # add one column of 1
+  p <- ncol(X) 
+  solve(t(X) %*% X + lambda * diag(p)) %*% t(X) %*% Y # compute the coefficients
+}
+```
+
+Apply the above algorithm and the glmnet package algorithm to the prostate cancer dataset to compare the output and timing.
+
+```{r}
+# Import cancer dataset.
+cancer <- read.table('https://hastie.su.domains/ElemStatLearn/datasets/prostate.data')
+
+# Split train and test set.
+train_cancer <- cancer[cancer$train == TRUE, ]
+test_cancer <- cancer[cancer$train == FALSE, ]
+
+# Split the design matrix and response vector for train and test set.
+x_train <- as.matrix(scale(train_cancer[,1:8])) # scale x as required.
+y_train <- train_cancer$lpsa
+
+x_test <- as.matrix(scale(test_cancer[,1:8]))
+y_test <- test_cancer$lpsa
+```
+
+```{r}
+# Calculate the coefficients for the newly implemented ridge regression
+my_ridge <- ridge_augmented(x_train, y_train, lambda = 0.087)
+
+# Augment the design matrix for test set for prediction
+x_test_aug <- cbind(1, x_test)
+
+# Predict on the test set
+my_ridge_pred <- x_test_aug %*% my_ridge
+
+# Calculate the mean squared error
+mse_my_ridge <- mean((my_ridge_pred - y_test)^2)
+mse_my_ridge
+```
+
+```{r, message=FALSE}
+# Naive implementation by glmnet package in R
+library(glmnet)
+
+# Build ridge regression model
+ridge_naive <- glmnet(x_train, y_train, alpha=0)
+
+# Predict on the test set
+naive_pred <- predict(ridge_naive, x_test)
+
+# Calculate mean squared error
+mse_naive <- mean((naive_pred - y_test)^2)
+mse_naive
+```
+
+```{r}
+# Compare the timing between two methods
+a <-microbenchmark(my_ridge, ridge_naive, times = 10000)
+```
+
+Based on the above outputs, the new implemented ridge regression has less mean squared error than the build-in ridge function in glmnet. The microbenchmark function is ran multiple times on both functions and sometimes the new ridge regression function is faster, sometimes the build-in function is faster, but generally they have similar computational time.
 
 ## Question 3
 
@@ -138,3 +343,5 @@ Test case 3: X = , Y = , n = , p = .
 #### ESL 3.30
 
 ## Reference
+* Hastie, T., Tibshirani, R., Friedman, J. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction, Second Edition. Springer.
+* Anton, H., & Rorres, C. (2013). Elementary Linear Algebra: Applications Version. Wiley.
