@@ -354,10 +354,45 @@ The posterior distribution is also Gaussian, with mean equal to $\frac{\frac{X^T
 Simplify it and we get $(X^TX+\frac{\sigma^2}{\tau}I)^{-1}X^T\overrightarrow{Y}$, if taking the regularization parameter $\lambda = \frac{\sigma^2}{\tau}$, then the mean of the posterior is $(X^TX+\lambda I)^{-1}X^T\overrightarrow{Y}$, which is exactly the formula for ridge regression estimate. Moreover, since the posterior is Gaussian, the mode is the same as the mean, which is also the ridge regression estimate.
 
 #### ESL 3.19
+From ESL Chapter 3 equation 3.44, we learned that the formula for ridge regression estimate is $\overrightarrow{\beta}^{ridge}=(X^TX+\lambda I)^{-1}X^T\overrightarrow{Y}$. Apply SVD on the design matrix X, $X = U\Sigma V^T$, substitute it into $\overrightarrow{\beta}^{ridge}$ and get:
+
+\begin{align*}
+\overrightarrow{\beta}^{ridge} &= ((U\Sigma V^T)^TU\Sigma V^T+\lambda I)^{-1}(U\Sigma V^T)^T\overrightarrow{Y}\\
+&= (V\Sigma^TU^TU\Sigma V^T+\lambda I)^{-1}V\Sigma U^T\overrightarrow{Y}\\
+&= (V\Sigma^2V^T+\lambda I)^{-1}V\Sigma U^T\overrightarrow{Y}\\
+&= V(\Sigma^2+\lambda I)^{-1}V^TV\Sigma U^T\overrightarrow{Y}\\
+&= V(\Sigma^2+\lambda I)^{-1}\Sigma U^T\overrightarrow{Y}
+\end{align*}
+
+\begin{align*}
+||\overrightarrow{\beta}^{ridge}||^2 &= \overrightarrow{\beta^T}^{ridge}\overrightarrow{\beta}^{ridge}\\
+&=\overrightarrow{Y}^TU\Sigma^T(\Sigma^2+\lambda I)^{-1}V^TV(\Sigma^2+\lambda I)^{-1}\Sigma U^T\overrightarrow{Y}\\
+&=\overrightarrow{Y}^TU\Sigma^T(\Sigma^2+\lambda I)^{-2}\Sigma U^T\overrightarrow{Y}\\
+&=(U^T\overrightarrow{Y})^T\Sigma^T(\Sigma^2+\lambda I)^{-2}\Sigma(U^T\overrightarrow{Y})\\
+&= \sum_{j=1}^p(\overrightarrow{u_j}\overrightarrow{Y})^2\frac{\sigma_j^2}{(\sigma_j^2+\lambda)^2}
+\end{align*}
+
+When $\lambda \rightarrow 0$, the term $\frac{\sigma_j^2}{(\sigma_j^2+\lambda)^2}$ increases as the denominator decreases, which leads to $||\overrightarrow{\beta}^{ridge}||^2$ increases. $||\overrightarrow{\beta}^{ridge}||$ is the square root of $||\overrightarrow{\beta}^{ridge}||^2$, therefore it also increases when $\lambda \rightarrow 0$. This intuitively makes sense, because when $\lambda$ decreases, the penalty on the coefficients weakens, resulting in larger coefficients.
+
+In the lasso case, $\overrightarrow{\beta}^{lasso} = argmin [\frac{1}{2}\sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^px_{ij}\beta_j)^2 + \lambda\sum_{j=1}^p|\beta_j|]$, the $\overrightarrow{\beta}^{lasso}$ here is defined to be the $\beta$ values that minimizes the above equation. When $\lambda$ decreases and goes to 0, the term $\lambda\sum_{j=1}^p|\beta_j|$ decreases, therefore $\sum_{j=1}^p|\beta_j|$ values need to increase to remain in the same minimized equation value, which results in increasing $\overrightarrow{\beta}^{lasso}$. Therefore, $||\overrightarrow{\beta}^{lasso}||$ also increases when $\lambda \rightarrow 0$.
 
 #### ESL 3.28
 
 #### ESL 3.30
+\begin{align*}
+&argmin_\beta ||\overrightarrow{Y}-X\overrightarrow{\beta}||_2^2 + \lambda(\alpha||\overrightarrow{\beta}||_2^2+(1-\alpha)||\overrightarrow{\beta}||_1)\\
+&= argmin_\beta ||\overrightarrow{Y}-X\overrightarrow{\beta}||_2^2 + \lambda\alpha||\overrightarrow{\beta}||_2^2+\lambda(1-\alpha)||\overrightarrow{\beta}||_1\\
+&= argmin_\beta ||\begin{pmatrix}
+ \overrightarrow{Y}-X\overrightarrow{\beta}\\ \sqrt{\lambda\alpha}\overrightarrow{\beta}
+\end{pmatrix}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1\\
+&= argmin_\beta ||\begin{pmatrix}\overrightarrow{Y}\\ 0 \end{pmatrix} - \begin{pmatrix}X\overrightarrow{\beta}\\ -\sqrt{\lambda\alpha} \end{pmatrix}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1\\
+&= argmin_\beta ||\begin{pmatrix}\overrightarrow{Y}\\ 0 \end{pmatrix} - \begin{pmatrix}X\overrightarrow{\beta}\\ \sqrt{\lambda\alpha}\overrightarrow{\beta} \end{pmatrix}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1\\
+&= argmin_\beta ||\begin{pmatrix}\overrightarrow{Y}\\ 0 \end{pmatrix} - \begin{pmatrix}X\\ \sqrt{\lambda\alpha} \end{pmatrix}\overrightarrow{\beta}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1
+\end{align*}
+
+So if make $\overrightarrow{Y_1} = \begin{pmatrix}\overrightarrow{Y}\\ 0 \end{pmatrix}$, and $X_1 = \begin{pmatrix}X\\ \sqrt{\lambda\alpha} \end{pmatrix}$, then the RSS formula will equal to the first part of the above formula: $||\overrightarrow{Y}-X\overrightarrow{\beta}||_2^2 + \lambda\alpha||\overrightarrow{\beta}||_2^2$. When we apply the lasso regression estimate formula to this $\overrightarrow{Y_1}$ and $X_1$, we get:
+
+$\overrightarrow{\beta}^{lasso} = argmin_{\beta} ||\overrightarrow{Y_1}-X_1\overrightarrow{\beta}||_2^2 + \lambda_1||\overrightarrow{\beta}||_1 = ||\overrightarrow{Y}-X\overrightarrow{\beta}||_2^2 + \lambda\alpha||\overrightarrow{\beta}||_2^2 + \lambda_1||\overrightarrow{\beta}||_1$, where $\lambda_1 = \lambda(1-\alpha)$. In other words, the elastic-net optimization problem can be turned into a lasso problem.
 
 ## Reference
 * Hastie, T., Tibshirani, R., Friedman, J. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction, Second Edition. Springer.
