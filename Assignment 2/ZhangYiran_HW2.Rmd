@@ -257,7 +257,10 @@ legend(x = 'bottomright',
 We benchmark the three algorithms using microbenchmark command for p = 10, 20, 50 respectively and using n from the range (300, 700). The log-log scale plots above shows that the algorithm using QR Decomposition has the highest computational time, linear regression with naive linear algebra has the second highest computational time, and linear regression with Cholesky Decomposition has the lowest computational time. The general trends show that the computational time increases as n increases, and increases as p increases.
 
 #### (c)
-Time complexity for naive linear algebra is said to be $O(np^2+p^3)$, for QR decomposition is $O(np^2)$, for SVD is $O(n^2p)$, and for Choleskey decomposition is $O(np^2)$.
+Time complexity for naive linear algebra is said to be $O(np^2+p^3)$ (RUser4512, 2018)
+, for QR decomposition is $O(np^2)$ (Ratz & Gander, 2021), for SVD is $O(n^2p+p^3)$ (Kambhampati, 2001), and for Choleskey decomposition is $O(n^3)$ (Rana, 2022).
+
+With the assumption that $n > p$, the ranking for time complexity for these four algorithms should be Cholesky Decomposition > SVD > Naive Linear Algbera > QR Decomposition. This result differs from the results in part (b), where Cholesky Decomposition in fact has the lowest cost and QR Decomposition has the highest.
 
 ## Question 2
 The formula for ridge regression is $\hat{\beta}^{ridge} = argmin[\sum_{i=1}^n (y_i-\beta_0-\sum_{i=1}^p x_{ij}\beta_j)^2+\lambda\sum_{j=1}^p \beta_j^2]$. In matrix form $\hat{\beta}^{ridge} = (\overrightarrow{Y}-X\overrightarrow{\beta})^T(\overrightarrow{Y}-X\overrightarrow{\beta})+\lambda\overrightarrow{\beta}^T\overrightarrow{\beta}$ (Hastie et al., 2009).
@@ -377,6 +380,13 @@ When $\lambda \rightarrow 0$, the term $\frac{\sigma_j^2}{(\sigma_j^2+\lambda)^2
 In the lasso case, $\overrightarrow{\beta}^{lasso} = argmin [\frac{1}{2}\sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^px_{ij}\beta_j)^2 + \lambda\sum_{j=1}^p|\beta_j|]$, the $\overrightarrow{\beta}^{lasso}$ here is defined to be the $\beta$ values that minimizes the above equation. When $\lambda$ decreases and goes to 0, the term $\lambda\sum_{j=1}^p|\beta_j|$ decreases, therefore $\sum_{j=1}^p|\beta_j|$ values need to increase to remain in the same minimized equation value, which results in increasing $\overrightarrow{\beta}^{lasso}$. Therefore, $||\overrightarrow{\beta}^{lasso}||$ also increases when $\lambda \rightarrow 0$.
 
 #### ESL 3.28
+The original lasso regression estimate is $\overrightarrow{\beta}^{lasso} = argmin_\beta\sum_{i=1}^n(y_i-\beta_0-\sum_{k=1}^px_{ik}\beta_k)^2$ subject to $\sum_{k=1}^p|\beta_k| \le t$ (Hastie et al., 2009). When we augment the design matrix with one variable $X_j^* = X_j$, denote the new design matrix $X^* = (X, X_j^*)$, then the new lasso regression estimate is:
+
+$\overrightarrow{\beta^*}^{lasso} = argmin_\beta\sum_{i=1}^n(y_i-\beta_0-\sum_{k=1}^px_{ik}\beta_k-x_{ij}\beta^*_j)^2$, subject to $\sum_{k=1}^p|\beta_k| + |\beta^*_j| \le t$
+
+The value of t is not changed, then $\sum_{k=1}^p|\beta_k| + |\beta^*_j| = \sum_{k \neq j}^p|\beta_k|+|\beta_j|+|\beta^*_j| \le t$, to remain with the same t value, $|\beta_j|+|\beta^*_j| = |\beta_j^{lasso}| = a$, and since both $\beta_j$ and $\beta_j^*$ are coefficients for an identical variable $X_j^*=X_j$, $\beta_j = \beta_j^* = \frac{a}{2}$.
+
+To conclude, augment the matrix with one identical variable will result in the lasso coefficient of $X_j$ and $X_j^*$ to be both $\frac{a}{2}$ (half of the original value), using the same t value.
 
 #### ESL 3.30
 \begin{align*}
@@ -385,7 +395,7 @@ In the lasso case, $\overrightarrow{\beta}^{lasso} = argmin [\frac{1}{2}\sum_{i=
 &= argmin_\beta ||\begin{pmatrix}
  \overrightarrow{Y}-X\overrightarrow{\beta}\\ \sqrt{\lambda\alpha}\overrightarrow{\beta}
 \end{pmatrix}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1\\
-&= argmin_\beta ||\begin{pmatrix}\overrightarrow{Y}\\ 0 \end{pmatrix} - \begin{pmatrix}X\overrightarrow{\beta}\\ -\sqrt{\lambda\alpha} \end{pmatrix}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1\\
+&= argmin_\beta ||\begin{pmatrix}\overrightarrow{Y}\\ 0 \end{pmatrix} - \begin{pmatrix}X\overrightarrow{\beta}\\ -\sqrt{\lambda\alpha}\overrightarrow{\beta} \end{pmatrix}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1\\
 &= argmin_\beta ||\begin{pmatrix}\overrightarrow{Y}\\ 0 \end{pmatrix} - \begin{pmatrix}X\overrightarrow{\beta}\\ \sqrt{\lambda\alpha}\overrightarrow{\beta} \end{pmatrix}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1\\
 &= argmin_\beta ||\begin{pmatrix}\overrightarrow{Y}\\ 0 \end{pmatrix} - \begin{pmatrix}X\\ \sqrt{\lambda\alpha} \end{pmatrix}\overrightarrow{\beta}||_2^2 + \lambda(1-\alpha)||\overrightarrow{\beta}||_1
 \end{align*}
@@ -397,3 +407,7 @@ $\overrightarrow{\beta}^{lasso} = argmin_{\beta} ||\overrightarrow{Y_1}-X_1\over
 ## Reference
 * Hastie, T., Tibshirani, R., Friedman, J. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction, Second Edition. Springer.
 * Anton, H., & Rorres, C. (2013). Elementary Linear Algebra: Applications Version. Wiley.
+* Kambhampati, S. (2001). SVD computation complexity (m^2 n + n^3). https://rakaposhi.eas.asu.edu/s01-cse494-mailarchive/msg00028.html
+* Rana, S. (2022). Cholesky Decomposition : Matrix Decomposition. GeeksforGeeks. https://www.geeksforgeeks.org/cholesky-decomposition-matrix-decomposition/
+* Ratz, A. V., & Gander, W. (2021). Can QR Decomposition Be Actually Faster? Schwarz-Rutishauser Algorithm. Towards Data Science. https://towardsdatascience.com/can-qr-decomposition-be-actually-faster-schwarz-rutishauser-algorithm-a32c0cde8b9b
+* RUser4512. (2018). Computational complexity of machine learning algorithms – The Kernel Trip. The Kernel Trip. https://www.thekerneltrip.com/machine/learning/computational-complexity-learning-algorithms/
