@@ -58,52 +58,52 @@ heart <- read.csv(url, row.names = 1)
 
 ## Question 3 (..)
 
+## Question 4 (..)
 
-## Question 4
+## Question 5
 #### ESL 5.4
 The natural boundary conditions for natural cubic splines is that "the function is linear beyond the boundary knots". When X < $\xi_1$, f(x) = $\beta_0 + \beta_1x  + \beta_2x^2 + \beta_3x^3$, to make it linear, we need $\beta_2$ and $\beta_3$ equal to 0. Alternatively, we can prove by taking the second derivative of f(x) and set it to 0. $f''(x) = 2\beta_2+6\beta_3x = 0$, hence $\beta_2 = \beta_3 = 0$.
 
 Similarly, the function f(x) should be linear when X > $\xi_k$ where f(x) = $\beta_0+\beta_1x+\sum_{k=1}^K\theta_k(X-\xi_k)^3$, we take second derivative and set it to 0. $f''(x) = 6\sum_{k=1}^K\theta_k(X-\xi_k) = 6(\sum_{k=1}^K\theta_kX-\sum_{k=1}^K\theta_k\xi_k) = 0$, then we have $\sum_{k=1}^K\theta_kX-\sum_{k=1}^K\theta_k\xi_k = 0$, which implies that $\sum_{k=1}^K\theta_k = 0$ and $\sum_{k=1}^K\theta_k\xi_k = 0$, as required.
 
-Now we derive (5.4) and (5.5). The function we have is $f(x) = \beta_0 + \beta_1x + \sum_{k=1}^K\theta_k(X-\xi_k)^3 = 0$, by observing the function, we get that $N_1(X) = 1, N_2(X) = X$, we now want to prove that $\sum_{k=1}^K\theta_k(X-\xi_k)^3$ can be written is the form of $N_{k+2}(X) = d_k(X) - d_{k-1}(X)$.
+Now we derive (5.4) and (5.5). The function we have is $f(x) = \beta_0 + \beta_1x + \sum_{k=1}^K\theta_k(X-\xi_k)_+^3 = 0$, by observing the function, we get that $N_1(X) = 1, N_2(X) = X$, we now want to prove that $\sum_{k=1}^K\theta_k(X-\xi_k)_+^3$ can be written is the form of $N_{k+2}(X) = d_k(X) - d_{k-1}(X)$.
 
 Given that $\sum_{k=1}^K\theta_k = 0$ and $\sum_{k=1}^K\theta_k\xi_k = 0$, we know that $\sum_{k=1}^{K-2}\theta_k = -\theta_K-\theta_{K-1}$ and $\sum_{k=1}^{K-2}\theta_k\xi_k = -\theta_K\xi_K-\theta_{K-1}\xi_{K-1}$.
 
-$\sum_{k=1}^K\theta_k(X-\xi_k)^3 = \sum_{k=1}^{K-2}\theta_k(X-\xi_k)^3+\theta_{K-1}(X-\xi_{K-1})^3+\theta_K(X-\xi_K)^3$
+$\sum_{k=1}^K\theta_k(X-\xi_k)_+^3 = \sum_{k=1}^{K-2}\theta_k(X-\xi_k)_+^3+\theta_{K-1}(X-\xi_{K-1})_+^3+\theta_K(X-\xi_K)_+^3$
 
 \begin{align*}
-\theta_{K-1}(X-\xi_{K-1})^3 &=\theta_{K-1}(X-\xi_{K-1})^3\frac{\xi_{K-1}-\xi_K}{\xi_{K-1}-\xi_K}\\
-&= \frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}(\theta_{K-1}\xi_{K-1}-\theta_{K-1}\xi_K)\\ 
-&= \frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}(\theta_{K-1}\xi_{K-1}-\theta_{K-1}\xi_K +\theta_K\xi_K - \theta_K\xi_K)\\
-&= \frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}(\theta_{K-1}\xi_{K-1}+\theta_K\xi_K - \theta_{K-1}\xi_K - \theta_K\xi_K)\\
-&= \frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}(-\sum_{k=1}^{K-2}\theta_k\xi_k+\xi_K\sum_{k=1}^{K-1}\theta_k)\\
-&= \frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}\sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)\\
-&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)\frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}
+\theta_{K-1}(X-\xi_{K-1})_+^3 &=\theta_{K-1}(X-\xi_{K-1})_+^3\frac{\xi_{K-1}-\xi_K}{\xi_{K-1}-\xi_K}\\
+&= \frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}(\theta_{K-1}\xi_{K-1}-\theta_{K-1}\xi_K)\\ 
+&= \frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}(\theta_{K-1}\xi_{K-1}-\theta_{K-1}\xi_K +\theta_K\xi_K - \theta_K\xi_K)\\
+&= \frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}(\theta_{K-1}\xi_{K-1}+\theta_K\xi_K - \theta_{K-1}\xi_K - \theta_K\xi_K)\\
+&= \frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}(-\sum_{k=1}^{K-2}\theta_k\xi_k+\xi_K\sum_{k=1}^{K-1}\theta_k)\\
+&= \frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}\sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)\\
+&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)\frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}
 \end{align*}
 
 Similarly,
 \begin{align*}
-\theta_K(X-\xi_K)^3 &= \frac{(X-\xi_K)^3}{\xi_{K-1}-\xi_K}\theta_K(\xi_{K-1}-\xi_K)\\
-&= \frac{(X-\xi_K)^3}{\xi_{K-1}-\xi_K}(\theta_K\xi_{K-1}-\theta_K\xi_K+\theta_{K-1}\xi_{K-1}-\theta_{K-1}\xi_{K-1})\\
-&= \frac{(X-\xi_K)^3}{\xi_{K-1}-\xi_K}(-\xi_{K-1}\sum_{k=1}^{K-2}\theta_K+\sum_{k=1}^{K-2}\theta_k\xi_k)\\
-&= \sum_{k=1}^{K-2}\theta_k(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})^3}{\xi_{K-1}-\xi_K}
+\theta_K(X-\xi_K)_+^3 &= \frac{(X-\xi_K)_+^3}{\xi_{K-1}-\xi_K}\theta_K(\xi_{K-1}-\xi_K)\\
+&= \frac{(X-\xi_K)_+^3}{\xi_{K-1}-\xi_K}(\theta_K\xi_{K-1}-\theta_K\xi_K+\theta_{K-1}\xi_{K-1}-\theta_{K-1}\xi_{K-1})\\
+&= \frac{(X-\xi_K)_+^3}{\xi_{K-1}-\xi_K}(-\xi_{K-1}\sum_{k=1}^{K-2}\theta_K+\sum_{k=1}^{K-2}\theta_k\xi_k)\\
+&= \sum_{k=1}^{K-2}\theta_k(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})_+^3}{\xi_{K-1}-\xi_K}
 \end{align*}
 
 Put them back together and get:
 
 \begin{align*}
-\sum_{k=1}^K\theta_k(X-\xi_k)^3 &= \sum_{k=1}^{K-2}\theta_k(X-\xi_k)^3+\theta_{K-1}(X-\xi_{K-1})^3+\theta_K(X-\xi_K)^3\\
-&=\sum_{k=1}^{K-2}\theta_k(X-\xi_k)^3 + \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)\frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K} + \sum_{k=1}^{K-2}\theta_k(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})^3}{\xi_{K-1}-\xi_K}\\
-&= \sum_{k=1}^{K-2}\theta_k [(X-\xi_k)^3+(\xi_K-\xi_k)\frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}+(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})^3}{\xi_{K-1}-\xi_K}]\\
-&= \sum_{k=1}^{K-2}\theta_k[(X-\xi_k)^3\frac{\xi_K-\xi_k}{\xi_K-\xi_k}+(\xi_K-\xi_k)\frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}+(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})^3}{\xi_{K-1}-\xi_K}\frac{\xi_K-\xi_k}{\xi_K-\xi_k}]\\
-&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)[\frac{(X-\xi_k)^3}{\xi_K-\xi_k}+\frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}+(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})^3}{(\xi_{K-1}-\xi_K)(\xi_K-\xi_k)}]\\
-&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)[\frac{(X-\xi_k)^3}{\xi_K-\xi_k}+\frac{(X-\xi_{K-1})^3}{\xi_{K-1}-\xi_K}+(X-\xi_{K})^3(\frac{-1}{\xi_{K-1}-\xi_K}-\frac{1}{\xi_K-\xi_k})]\\
-&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)[\frac{(X-\xi_k)^3-(X-\xi_{K})^3}{\xi_K-\xi_k}+\frac{(X-\xi_{K-1})^3-(X-\xi_{K})^3}{\xi_{K-1}-\xi_K}]\\
-&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)[\frac{(X-\xi_k)^3-(X-\xi_{K})^3}{\xi_K-\xi_k}-\frac{(X-\xi_{K-1})^3-(X-\xi_{K})^3}{\xi_K-\xi_{K-1}}]\\
+\sum_{k=1}^K\theta_k(X-\xi_k)_+^3 &= \sum_{k=1}^{K-2}\theta_k(X-\xi_k)_+^3+\theta_{K-1}(X-\xi_{K-1})_+^3+\theta_K(X-\xi_K)_+^3\\
+&=\sum_{k=1}^{K-2}\theta_k(X-\xi_k)_+^3 + \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)\frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K} + \sum_{k=1}^{K-2}\theta_k(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})_+^3}{\xi_{K-1}-\xi_K}\\
+&= \sum_{k=1}^{K-2}\theta_k [(X-\xi_k)_+^3+(\xi_K-\xi_k)\frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}+(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})_+^3}{\xi_{K-1}-\xi_K}]\\
+&= \sum_{k=1}^{K-2}\theta_k[(X-\xi_k)_+^3\frac{\xi_K-\xi_k}{\xi_K-\xi_k}+(\xi_K-\xi_k)\frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}+(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})_+^3}{\xi_{K-1}-\xi_K}\frac{\xi_K-\xi_k}{\xi_K-\xi_k}]\\
+&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)[\frac{(X-\xi_k)_+^3}{\xi_K-\xi_k}+\frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}+(\xi_k-\xi_{K-1})\frac{(X-\xi_{K})_+^3}{(\xi_{K-1}-\xi_K)(\xi_K-\xi_k)}]\\
+&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)[\frac{(X-\xi_k)_+^3}{\xi_K-\xi_k}+\frac{(X-\xi_{K-1})_+^3}{\xi_{K-1}-\xi_K}+(X-\xi_{K})_+^3(\frac{-1}{\xi_{K-1}-\xi_K}-\frac{1}{\xi_K-\xi_k})]\\
+&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)[\frac{(X-\xi_k)_+^3-(X-\xi_{K})_+^3}{\xi_K-\xi_k}+\frac{(X-\xi_{K-1})_+^3-(X-\xi_{K})_+^3}{\xi_{K-1}-\xi_K}]\\
+&= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)[\frac{(X-\xi_k)_+^3-(X-\xi_{K})_+^3}{\xi_K-\xi_k}-\frac{(X-\xi_{K-1})_+^3-(X-\xi_{K})_+^3}{\xi_K-\xi_{K-1}}]\\
 &= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)(d_k(X)-d_{K-1}(X))\\
 &= \sum_{k=1}^{K-2}\theta_k(\xi_K-\xi_k)N_{k+2}(X)
 \end{align*}
-
 Therefore, to conclude, we get $N_1(X) = 1, N_2(X) = X, N_{k+2}(X) = d_k(X)-d_{K-1}(X)$ as desired in (5.4) and (5.5).
 
 #### ESL 5.13
