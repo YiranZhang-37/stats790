@@ -1,6 +1,7 @@
 # Question 2
 # Import libraries
 library(splines)
+library(ggplot2)
 
 # Import South Africa coronary heart disease data.
 url <- "http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/SAheart.data"
@@ -51,15 +52,17 @@ var_Y_b <- diag(X_b %*% vcov(logistic_b) %*% t(X_b)) # predicted variance
 se_Y_b <- as.matrix(sqrt(var_Y_b)) # predicted se
 upper_b <- Y_b + se_Y_b # upper bound of the CI
 lower_b <- Y_b - se_Y_b # lower bound of the CI
-# Plot the predicted values
-plot(heart$tobacco, Y_b, 
-     xlab = 'Tobacco consumption', 
-     ylab = 'Fitted value in log-odds scale', 
-     main = 'B-Spline prediction')
-# Upper bound
-lines(sort(heart$tobacco), upper_b[order(heart$tobacco)], col = "red", lty = 2)
-# Lower bound
-lines(sort(heart$tobacco), lower_b[order(heart$tobacco)], col = "red", lty = 2)
+
+# Create a dataframe for b-spline x, predicted y, upper and lower bound of y.
+df_b <- as.data.frame(cbind(heart$tobacco, Y_b, upper_b, lower_b))
+colnames(df_b) <- c('tobacco', 'pred', 'upper', 'lower')
+
+# Plot for b-spline
+ggplot(df_b, aes(x=tobacco)) +  geom_point(aes(y = pred)) + # scatter plot for Y_b
+  geom_line(aes(y = upper), linetype = 'dashed', color = 'red') + # add upper bound
+  geom_line(aes(y = lower), linetype = 'dashed', color = 'red') +  # add lower bound
+  labs(x = "Tobacco consumption", y = "Fitted value in log-odds scale", 
+       title = "B-Spline prediction") # add axis labels
 
 # natural spline
 X_n <- model.matrix(logistic_n) # design matrix for b-spline
@@ -69,31 +72,35 @@ var_Y_n <- diag(X_n %*% vcov(logistic_n) %*% t(X_n)) # predicted variance
 se_Y_n <- as.matrix(sqrt(var_Y_n)) # predicted se
 upper_n <- Y_n + se_Y_n # upper bound of the CI
 lower_n <- Y_n - se_Y_n # lower bound of the CI
-# Plot the predicted values
-plot(heart$tobacco, Y_n, 
-     xlab = 'Tobacco consumption', 
-     ylab = 'Fitted value in log-odds scale', 
-     main = 'Natural Spline prediction')
-# Upper bound
-lines(sort(heart$tobacco), upper_n[order(heart$tobacco)], col = "red", lty = 2)
-# Lower bound
-lines(sort(heart$tobacco), lower_n[order(heart$tobacco)], col = "red", lty = 2)
+
+# Create a dataframe for natural spline x, predicted y, upper and lower bound of y.
+df_n <- as.data.frame(cbind(heart$tobacco, Y_n, upper_n, lower_n))
+colnames(df_n) <- c('tobacco', 'pred', 'upper', 'lower')
+
+# Plot for natural spline
+ggplot(df_n, aes(x=tobacco)) +  geom_point(aes(y = pred)) + # scatter plot for Y_b
+  geom_line(aes(y = upper), linetype = 'dashed', color = 'red') + # add upper bound
+  geom_line(aes(y = lower), linetype = 'dashed', color = 'red') +  # add lower bound
+  labs(x = "Tobacco consumption", y = "Fitted value in log-odds scale", 
+       title = "Natural Spline prediction") # add axis labels
 
 # truncated polynomial spline
 X_poly <- model.matrix(logistic_poly) # design matrix for b-spline
 coef_poly <- as.vector(logistic_poly$coefficients) # coefficients vector for b-spline
 Y_poly <- X_poly %*% coef_poly # predicted value
 var_Y_poly <- diag(X_poly %*% vcov(logistic_poly) %*% t(X_poly)) # predicted variance
-se_Y_poly <- as.matrix(sqrt(var_Y_poly)) # predicted se
+se_Y_poly <- as.matrix(sqrt(abs(var_Y_poly))) # predicted se
 upper_poly <- Y_poly + se_Y_poly # upper bound of the CI
 lower_poly <- Y_poly - se_Y_poly # lower bound of the CI
-# Plot the predicted values
-plot(heart$tobacco, Y_poly, 
-     xlab = 'Tobacco consumption', 
-     ylab = 'Fitted value in log-odds scale', 
-     main = 'Truncated Polynomial Spline prediction')
-# Upper bound
-lines(sort(heart$tobacco), upper_poly[order(heart$tobacco)], col = "red", lty = 2)
-# Lower bound
-lines(sort(heart$tobacco), lower_poly[order(heart$tobacco)], col = "red", lty = 2)
 
+# Create a dataframe for truncated polynomial spline x, predicted y, 
+# upper and lower bound of y.
+df_poly <- as.data.frame(cbind(heart$tobacco, Y_poly, upper_poly, lower_poly))
+colnames(df_poly) <- c('tobacco', 'pred', 'upper', 'lower')
+
+# Plot for truncated polynomial spline
+ggplot(df_poly, aes(x=tobacco)) +  geom_point(aes(y = pred)) + # scatter plot for Y_b
+  geom_line(aes(y = upper), linetype = 'dashed', color = 'red') + # add upper bound
+  geom_line(aes(y = lower), linetype = 'dashed', color = 'red') +  # add lower bound
+  labs(x = "Tobacco consumption", y = "Fitted value in log-odds scale", 
+       title = "Truncated Polynomial Spline prediction") # add axis labels
