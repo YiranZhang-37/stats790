@@ -376,6 +376,35 @@ Put them back together and get:
 Therefore, to conclude, we get $N_1(X) = 1, N_2(X) = X, N_{k+2}(X) = d_k(X)-d_{K-1}(X)$ as desired in (5.4) and (5.5).
 
 #### ESL 5.13
+From ESL Chapter 5 we learned that smoothing spline is the function f which minimizes the RSS = $\sum_{i=1}^N(y_i-f(x_i))^2+\lambda\int (f''(t))^2dt$, where $\lambda$ is the smoothing parameter. If $\lambda$ is large, then f will be smooth. And if $\lambda \rightarrow \infty$, then f will be perfectly smooth like a straight line. Therefore, when we augment our dataset with ($x_0, \hat{f_\lambda}(x_0)$) when $\lambda$ is very large, then the fitted curve will not change rapidly, the augmented pair has little effect. On the other hand, if $\lambda$ is small, augmenting the pair ($x_0, \hat{f_\lambda}(x_0)$) will make the smoothing spline more flexible and interpolate the training observations closer.
 
-## References
+By the definition of the MSE of n-fold cross validation (leave-one-out cross validation), $MSE = \frac{1}{N}\sum_{i=1}^N MSE_i$, where $MSE_i$ is the MSE of each fit, for $i = 1, \dots, N$. Let $\hat{f_\lambda}^{(-i)}(x_i)$ be the estimate for the $i^{th}$ fit, where ($x_i, y_i$) is left out. Then $MSE_i = (y_i-\hat{f_\lambda}^{(-i)}(x_i))^2$. Hence by the definition of n-fold cross validation, $MSE_{CV} = \frac{1}{N}\sum_{i=1}^N (y_i-\hat{f_\lambda}^{(-i)}(x_i))^2$ (ESL 5.26).
+
+ESL 5.14 states that $\hat{f_\lambda} = S_\lambda y$, then $\hat{f_\lambda} (x_i)= \sum_{j=1}^nS_\lambda(i,j) y_j$.
+
+For the estimate at the $i^{th}$ fit, we can also write:
+\begin{align*}
+\hat{f_\lambda}^{(-i)}(x_i) &= \sum_{j=1, j\neq i}^nS_\lambda(i,j) y_j + S_\lambda(i,i)y_i\\
+&= \sum_{j=1}^nS_\lambda(i,j) y_j - S_\lambda(i,i)y_i + S_\lambda(i,i)y_i\\
+&= \sum_{j=1}^nS_\lambda(i,j) y_j - S_\lambda(i,i)y_i + S_\lambda(i,i)\hat{f_\lambda}^{(-i)}(x_i)\\
+&= \hat{f_\lambda} (x_i) - S_\lambda(i,i)y_i + S_\lambda(i,i)\hat{f_\lambda}^{(-i)}(x_i)
+\end{align*}
+
+Therefore,
+\begin{align*}
+\hat{f_\lambda}^{(-i)}(x_i)(1-S_\lambda(i,i)) &= \hat{f_\lambda} (x_i)-S_\lambda(i,i)y_i\\
+\hat{f_\lambda}^{(-i)} &= \frac{\hat{f_\lambda} (x_i)-S_\lambda(i,i)y_i}{1-S_\lambda(i,i)}\\
+y_i - \hat{f_\lambda}^{(-i)} &= y_i - \frac{\hat{f_\lambda} (x_i)-S_\lambda(i,i)y_i}{1-S_\lambda(i,i)}\\
+y_i - \hat{f_\lambda}^{(-i)} &= \frac{y_i-S_\lambda(i,i)y_i -\hat{f_\lambda} (x_i)+S_\lambda(i,i)y_i}{1-S_\lambda(i,i)}\\
+y_i - \hat{f_\lambda}^{(-i)} &= \frac{y_i - \hat{f_\lambda} (x_i)}{1-S_\lambda(i,i)}
+\end{align*}
+
+Substitute this result into (5.26) and get $MSE_{CV}(\hat{f_\lambda}) = \frac{1}{N}\sum_{i=1}^N (y_i-\hat{f_\lambda}^{(-i)}(x_i))^2 = \frac{1}{N}\sum_{i=1}^N [\frac{y_i - \hat{f_\lambda} (x_i)}{1-S_\lambda(i,i)}]^2$.
+
+## Reference
+* Hastie, T., Tibshirani, R., Friedman, J. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction, Second Edition. Springer.
+* James, G., Witten, D., Hastie, T., Tibshirani, R. (2021). An Introduction to Statistical Learning with Applications in R, Second Edition. Springer.
+* Bolker, B. (2023). Splines and basis expansion (week 3). GitHub. https://github.com/bbolker/stat790/blob/main/notes/splines.qmd
+* ahstat. (2015). Why are the basis functions for natural cubic splines expressed as they are? (ESL). Cross Validated. https://stats.stackexchange.com/questions/172217/why-are-the-basis-functions-for-natural-cubic-splines-expressed-as-they-are-es
+* COOLSerdash. (2021). Splines: relationship of knots, degree and degrees of freedom. Cross Validated. https://stats.stackexchange.com/questions/517375/splines-relationship-of-knots-degree-and-degrees-of-freedom
 
