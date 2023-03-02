@@ -48,7 +48,7 @@ for (i in 1:simulation_num) {
   
   # Fit a GAM model using z ~ te(x,y) formula and method = "GCV.Cp"
   start_time <- Sys.time() # time before running model
-  model1 <- gam(z ~ te(x, y), data = my_data, method = "GCV.Cp")
+  model1 <- gam(z ~ te(x,y,bs = "gp"), data = my_data, method = "GCV.Cp")
   end_time <- Sys.time() # time after running model
   comp_time1[i] <- as.numeric(end_time - start_time) # computation time
   
@@ -85,7 +85,7 @@ for (i in 1:simulation_num) {
   
   # Fit a GAM model using z ~ te(x,y) formula and method = "REML"
   start_time <- Sys.time()
-  model2 <- gam(z ~ te(x, y), data = my_data, method = "REML")
+  model2 <- gam(z ~ te(x,y,bs = "gp"), data = my_data, method = "REML")
   end_time <- Sys.time()
   comp_time2[i] <- as.numeric(end_time - start_time) # computation time
   
