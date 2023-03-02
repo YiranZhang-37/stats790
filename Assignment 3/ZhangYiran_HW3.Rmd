@@ -64,7 +64,7 @@ heart <- read.csv(url, row.names = 1)
 # Knots that can equally divide the tobacco range are chosen
 # There are 107 out of 462 tobacco values are 0, 107/462 = 0.2316
 # So the first knot need to be greater than 0.2316 to avoid NA values in glm
-knots <- quantile(heart$tobacco, probs = c(0.24, 0.32, 0.48, 0.64, 0.8))
+knots <- quantile(heart$tobacco, probs = c(0.24, 0.40, 0.55, 0.70, 0.85))
 
 # B-spline base
 b_spline <- bs(heart$tobacco, knots = knots)
@@ -160,6 +160,7 @@ ggplot(df_poly, aes(x=tobacco)) +  geom_point(aes(y = pred)) + # scatter plot fo
 ```
 
 ## Question 3
+
 
 ## Question 4
 #### Part(a)

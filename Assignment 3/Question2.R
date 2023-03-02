@@ -11,7 +11,7 @@ heart <- read.csv(url, row.names = 1)
 # Knots that can equally divide the tobacco range are chosen
 # There are 107 out of 462 tobacco values are 0, 107/462 = 0.2316
 # So the first knot need to be greater than 0.2316 to avoid NA values in glm
-knots <- quantile(heart$tobacco, probs = c(0.24, 0.32, 0.48, 0.64, 0.8))
+knots <- quantile(heart$tobacco, probs = c(0.24, 0.40, 0.55, 0.70, 0.85))
 
 # B-spline base
 b_spline <- bs(heart$tobacco, knots = knots)
@@ -89,7 +89,7 @@ X_poly <- model.matrix(logistic_poly) # design matrix for b-spline
 coef_poly <- as.vector(logistic_poly$coefficients) # coefficients vector for b-spline
 Y_poly <- X_poly %*% coef_poly # predicted value
 var_Y_poly <- diag(X_poly %*% vcov(logistic_poly) %*% t(X_poly)) # predicted variance
-se_Y_poly <- as.matrix(sqrt(abs(var_Y_poly))) # predicted se
+se_Y_poly <- as.matrix(sqrt(var_Y_poly)) # predicted se
 upper_poly <- Y_poly + se_Y_poly # upper bound of the CI
 lower_poly <- Y_poly - se_Y_poly # lower bound of the CI
 
